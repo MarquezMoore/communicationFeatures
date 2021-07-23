@@ -6,7 +6,7 @@ import MapView from 'react-native-maps';
 
 export default function ImagePickerExample() {
   const [ image, setImage ] = useState(null);
-  const [ locayion, setLaction ] = useState(null);
+  const [ location, setLocation ] = useState(null);
   const pickImage = async () => {
     const library = await ImagePicker.requestMediaLibraryPermissionsAsync();
     console.log(`Library Access: ${library.status}`)
@@ -48,10 +48,10 @@ export default function ImagePickerExample() {
   }
   
   const getLocation = async () =>{
-    const { location } = await Location.requestForegroundPermissionsAsync();
-    console.log(`Location access: ${location.status}`)
+    const locationAccess = await Location.requestForegroundPermissionsAsync();
 
-    if( location.status === 'granted') {
+
+    if( locationAccess.status === 'granted') {
       let location = await Location.getCurrentPositionAsync({});
 
       if (location){
@@ -69,6 +69,16 @@ export default function ImagePickerExample() {
         title="Get my location"
         onPress={getLocation}
       />
+      {location &&
+      <MapView
+        style={{width: 300, height: 200}}
+        region={{
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      />}
     </View>
   );
 }
